@@ -1252,7 +1252,9 @@ h1.name{
   position: relative;
   display: block;
   width: 100%; height: 100%;
+  -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
+  transform: rotateY(0deg);
   transition: transform .55s cubic-bezier(.4,.2,.2,1);
 }
 .memory-card.flipped .memory-card-inner,
@@ -1263,8 +1265,9 @@ h1.name{
   display: grid;
   place-items: center;
   border-radius: 14px;
-  backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: rotateY(0deg) translateZ(1px); /* Safari precisa de transform próprio em cada face */
   font-size: clamp(1.4rem, 6vw, 1.8rem);
 }
 .memory-card-back{
@@ -1279,8 +1282,15 @@ h1.name{
 }
 .memory-card-front{
   background: linear-gradient(160deg, #fff8f1, #f3dccb);
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateZ(1px);
 }
+/* troca de face na metade do giro: funciona mesmo onde backface-visibility falha */
+.memory-card-front{ visibility: hidden; transition: visibility 0s .27s; }
+.memory-card-back{ visibility: visible; transition: visibility 0s .27s; }
+.memory-card.flipped .memory-card-front,
+.memory-card.matched .memory-card-front{ visibility: visible; }
+.memory-card.flipped .memory-card-back,
+.memory-card.matched .memory-card-back{ visibility: hidden; }
 .memory-card.matched .memory-card-front{ box-shadow: inset 0 0 0 3px var(--ruby), 0 0 18px rgba(224,49,92,.45); }
 
 .tictac-grid{
