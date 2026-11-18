@@ -410,6 +410,57 @@
     });
     audio.addEventListener("play", () => setPlaying(true));
     audio.addEventListener("pause", () => setPlaying(false));
+
+    // mini player flutuante: dá para pausar de qualquer parte da carta
+    const mini = $("miniPlayer");
+    const miniToggle = $("miniToggle");
+    const section = $("musicSection");
+    if (!mini || !miniToggle || !section) return;
+    let musicInView = true;
+    const syncMini = () => {
+      const show = audio.currentTime > 0 && !audio.ended && !musicInView;
+      mini.hidden = !show;
+      mini.classList.toggle("paused", audio.paused);
+      miniToggle.setAttribute("aria-label", audio.paused ? "Tocar música" : "Pausar música");
+    };
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(([en]) => { musicInView = en.isIntersecting; syncMini(); }, { threshold: 0.2 }).observe(section);
+    }
+    audio.addEventListener("play", syncMini);
+    audio.addEventListener("pause", syncMini);
+    miniToggle.addEventListener("click", () => (audio.paused ? audio.play().catch(() => {}) : audio.pause()));
+  }
+
+  // ---------- surpresa escondida ----------
+  function openSecret() {
+    const secret = $("secret");
+    if (!secret || !secret.hidden) return;
+    const last = document.activeElement;
+    secret.hidden = false;
+    requestAnimationFrame(() => secret.classList.add("show"));
+    const closeBtn = $("secretClose");
+    closeBtn?.focus();
+    const r = secret.querySelector(".secret-heart")?.getBoundingClientRect();
+    if (r) setTimeout(() => burstHearts(r.left + r.width / 2, r.top + r.height / 2, 28), 250);
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    const onBackdrop = (e) => { if (e.target === secret) close(); };
+    const close = () => {
+      secret.classList.remove("show");
+      setTimeout(() => { secret.hidden = true; }, 350);
+      document.removeEventListener("keydown", onKey);
+      secret.removeEventListener("click", onBackdrop);
+      closeBtn?.removeEventListener("click", close);
+      last?.focus?.();
+    };
+    document.addEventListener("keydown", onKey);
+    secret.addEventListener("click", onBackdrop);
+    closeBtn?.addEventListener("click", close);
+  }
+
+  // ---------- app offline (adicionar à tela inicial) ----------
+  function initOffline() {
+    if (!("serviceWorker" in navigator) || location.protocol !== "https:") return;
+    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
   }
 
   // ---------- sushi ----------
@@ -900,7 +951,12 @@
     const canvas = $("heroCanvas");
     if (!canvas) return;
     // toque no coração 3D: chuva de coraçõezinhos
-    window.addEventListener("heart:tap", (e) => burstHearts(e.detail.x, e.detail.y, 20));
+    let taps = 0;
+    window.addEventListener("heart:tap", (e) => {
+      burstHearts(e.detail.x, e.detail.y, 20);
+      navigator.vibrate?.([18, 60, 26]); // "tum-tum" no Android
+      if (++taps === 7) openSecret();
+    });
 
     const conn = navigator.connection;
     const slow = conn && (conn.saveData || /2g/.test(conn.effectiveType || ""));
@@ -928,5 +984,6 @@
   initRosary();
   initRelationshipCounter();
   initHeart3d();
+  initOffline();
   requestScrollUpdate();
 })();

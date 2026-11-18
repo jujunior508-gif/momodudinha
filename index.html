@@ -11,7 +11,17 @@
 <meta property="og:title" content="Para Eduarda 💌">
 <meta property="og:description" content="Uma pequena carta, nossa história, nossas fotos e nossa música.">
 <meta property="og:url" content="https://jujunior508-gif.github.io/momodudinha/">
-<meta property="og:image" content="https://jujunior508-gif.github.io/momodudinha/foto-1.jpg">
+<meta property="og:image" content="https://jujunior508-gif.github.io/momodudinha/assets/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Uma pequena carta para Eduarda, com um coração 3D">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Eduarda 💌">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23e0315c' d='M12 21s-7.5-4.6-10-9.1C.6 8.6 2 5 5.4 4.2 8 3.6 10 5 12 7.5 14 5 16 3.6 18.6 4.2 22 5 23.4 8.6 22 11.9 19.5 16.4 12 21 12 21z'/%3E%3C/svg%3E">
 <script>document.documentElement.classList.add('js');</script>
 <script type="importmap">
@@ -25,7 +35,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500..700;1,400..700&family=EB+Garamond:ital,wght@0,400..500;1,400..500&family=Manrope:wght@500..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20">
+<link rel="stylesheet" href="style.css?v=21">
 </head>
 <body>
 
@@ -419,10 +429,30 @@
 
 <footer>feito com carinho para Eduarda <span aria-hidden="true">♥</span></footer>
 
+<!-- mini player: aparece quando a música está tocando e ela sai da seção da música -->
+<div class="mini-player" id="miniPlayer" hidden>
+  <span class="mini-disc" aria-hidden="true"></span>
+  <span class="mini-title"><b>Salvatore</b><small>Lana Del Rey</small></span>
+  <button class="mini-btn" id="miniToggle" type="button" aria-label="Pausar música">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path class="mini-pause" d="M6 5h4v14H6zM14 5h4v14h-4z"/><path class="mini-play" d="M8 5v14l11-7z"/></svg>
+  </button>
+</div>
+
+<!-- surpresa: 7 toques no coração 3D -->
+<div class="secret" id="secret" role="dialog" aria-modal="true" aria-labelledby="secretTitle" hidden>
+  <div class="secret-card">
+    <svg class="secret-heart" viewBox="0 0 24 24" aria-hidden="true"><use href="#heart"/></svg>
+    <div class="page-eyebrow">você achou o segredo</div>
+    <h2 class="secret-title" id="secretTitle">Meu coração é seu.</h2>
+    <p>Pode apertar quantas vezes quiser — ele sempre vai bater mais forte por você, Eduarda.</p>
+    <button class="btn btn-primary" id="secretClose" type="button">guardar esse segredo</button>
+  </div>
+</div>
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.1C.6 8.6 2 5 5.4 4.2 8 3.6 10 5 12 7.5 14 5 16 3.6 18.6 4.2 22 5 23.4 8.6 22 11.9 19.5 16.4 12 21 12 21z"/></symbol>
 </svg>
 
-<script src="script.js?v=20" defer></script>
+<script src="script.js?v=21" defer></script>
 </body>
 </html>

@@ -23,3 +23,9 @@ Site estático publicado pelo GitHub Pages (sem etapa de build).
 ## Publicar
 
 Settings → Pages → Deploy from a branch → `main` / `(root)`.
+
+## Extras
+
+- `manifest.webmanifest` + `sw.js` — pode ser instalado na tela inicial e abre offline.
+- `assets/og-card.jpg` — imagem de prévia ao compartilhar o link.
+- Mini player flutuante enquanto a música toca; surpresa escondida ao tocar 7 vezes no coração.

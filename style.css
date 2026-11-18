@@ -1679,6 +1679,92 @@ footer span{ color: var(--ruby); }
 }
 .chapter-dot:focus-visible{ outline-offset: -4px; }
 
+/* ===== Mini player ===== */
+.mini-player{
+  position: fixed;
+  right: max(.8rem, env(safe-area-inset-right));
+  top: max(.8rem, env(safe-area-inset-top));
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  padding: .35rem .4rem .35rem .45rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(17,7,11,.9);
+  box-shadow: 0 14px 34px -10px rgba(0,0,0,.8);
+  animation: miniIn .5s var(--ease) both;
+}
+.mini-player[hidden]{ display: none; }
+@keyframes miniIn{ from{ opacity: 0; transform: translateY(-12px) scale(.95); } }
+.mini-disc{
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--champagne) 0 9%, var(--ruby) 10% 30%, #1b070d 31% 34%, transparent 35%), repeating-radial-gradient(circle, #120509 0 1.5px, #24101a 1.5px 3px);
+  animation: spin 4s linear infinite;
+}
+.mini-player.paused .mini-disc{ animation-play-state: paused; }
+.mini-title{ display: grid; line-height: 1.15; padding-right: .2rem; }
+.mini-title b{ font-family: var(--display); font-size: .9rem; font-style: italic; font-weight: 500; }
+.mini-title small{ color: var(--muted); font-family: var(--sans); font-size: .62rem; font-weight: 600; letter-spacing: .08em; }
+.mini-btn{
+  display: grid;
+  place-items: center;
+  width: 36px; height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ruby);
+  cursor: pointer;
+}
+.mini-btn svg{ width: 15px; height: 15px; fill: #fff; }
+.mini-play{ display: none; }
+.mini-player.paused .mini-play{ display: block; }
+.mini-player.paused .mini-pause{ display: none; }
+
+/* ===== Surpresa ===== */
+.secret{
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  background: rgba(8,3,5,.78);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.secret[hidden]{ display: none; }
+.secret.show{ opacity: 1; }
+.secret-card{
+  max-width: 420px;
+  padding: 2.4rem 1.8rem 2rem;
+  border: 1px solid rgba(224,49,92,.45);
+  border-radius: 30px;
+  background: radial-gradient(circle at 50% 0%, rgba(224,49,92,.3), transparent 60%), var(--bg-2);
+  box-shadow: 0 40px 80px -20px rgba(0,0,0,.9), 0 0 80px rgba(224,49,92,.25);
+  text-align: center;
+  transform: scale(.9) translateY(20px);
+  transition: transform .5s var(--ease);
+}
+.secret.show .secret-card{ transform: none; }
+.secret-heart{
+  width: 64px; height: 64px;
+  margin: 0 auto 1.2rem;
+  fill: var(--ruby);
+  filter: drop-shadow(0 0 20px rgba(224,49,92,.8));
+  animation: heartbeat 1.4s ease-in-out infinite;
+}
+.secret-title{
+  margin-bottom: .8rem;
+  font-family: var(--display);
+  font-size: clamp(2rem, 8vw, 2.6rem);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--champagne);
+}
+.secret-card p{ color: var(--muted); font-size: 1.1rem; line-height: 1.6; }
+
 /* ===== Telas maiores ===== */
 @media (min-width: 700px){
   .sushi-board{ grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .8rem; }
