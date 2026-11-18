@@ -714,9 +714,11 @@
       return g;
     };
 
-    const label = (bx, by, side, lines) => {
+    // gap: distância da borda da conta onde a seta para (não atravessa a medalha nem a cruz)
+    const label = (bx, by, side, lines, gap = 8) => {
       const anchorX = side === "left" ? 108 : 282;
-      svg("line", { x1: anchorX, y1: by, x2: bx, y2: by, class: "label-line", "marker-end": "url(#labelArrow)" });
+      const tipX = side === "left" ? bx - gap : bx + gap;
+      svg("line", { x1: anchorX, y1: by, x2: tipX, y2: by, class: "label-line", "marker-end": "url(#labelArrow)" });
       svg("circle", { cx: anchorX, cy: by, r: 1.6, class: "label-dot" });
       const lineHeight = 9.6;
       const startY = by - ((lines.length - 1) * lineHeight) / 2;
@@ -767,18 +769,27 @@
     const crossWrap = svg("g", { transform: `translate(195,${crossCy})` });
     const cross = svg("g", { class: "rosary-bead bead-cross" }, crossWrap);
     cross.style.transformOrigin = "0px 0px";
+    // cruz com pontas arredondadas (botonée), pedra rosa no centro e um fio de brilho
     cross.innerHTML = `
-      <rect class="cross-glow" x="-22" y="-38" width="44" height="76" rx="8" fill="none"/>
-      <rect x="-4.5" y="-34" width="9" height="68" rx="3" fill="url(#metalGrad)"/>
-      <rect x="-19" y="-16" width="38" height="9" rx="3" fill="url(#metalGrad)"/>
-      <circle cx="0" cy="-11.5" r="3.4" fill="#3f0a1a" opacity="0.55"/>`;
+      <ellipse class="cross-glow" cx="0" cy="0" rx="29" ry="43" fill="none"/>
+      <g class="cross-metal" fill="url(#metalGrad)">
+        <rect x="-3.8" y="-31" width="7.6" height="63" rx="2.2"/>
+        <rect x="-18" y="-15.2" width="36" height="7.6" rx="2.2"/>
+        <circle cx="0" cy="-32" r="4.8"/>
+        <circle cx="-19" cy="-11.4" r="4.8"/>
+        <circle cx="19" cy="-11.4" r="4.8"/>
+        <circle cx="0" cy="33" r="4.8"/>
+      </g>
+      <path d="M0 -27 V29 M-14 -11.4 H14" stroke="rgba(255,250,236,.6)" stroke-width=".8" fill="none"/>
+      <circle cx="0" cy="-11.4" r="5" fill="url(#beadGrad)" stroke="#fff1d8" stroke-width="1.1"/>
+      <circle cx="-1.4" cy="-13" r="1.3" fill="rgba(255,255,255,.85)"/>`;
     makeInteractive(cross, "Crucifixo — Sinal da Cruz e Credo", {
       step: "1 · Sinal da Cruz e Credo",
       title: "Em nome do Pai",
       text: "Em nome do Pai, do Filho e do Espírito Santo. Amém. Creio em Deus Pai todo-poderoso, criador do céu e da terra, e em Jesus Cristo, seu único Filho, nosso Senhor..."
     });
-    label(195, crossCy, "left", ["SINAL DA CRUZ"]);
-    label(195, crossCy - 18, "right", ["CREIO EM", "DEUS PAI"]);
+    label(195, crossCy, "left", ["SINAL DA CRUZ"], 10);
+    label(195, crossCy - 18, "right", ["CREIO EM", "DEUS PAI"], 25);
 
     // corrente de abertura: conta grande, três Ave-Marias e, então, a medalha
     const paterCy = 550, ave1Cy = 525, ave2Cy = 503, ave3Cy = 481;
@@ -795,7 +806,7 @@
     label(195, paterCy, "right", ["PAI NOSSO"]);
     [ave1Cy, ave2Cy, ave3Cy].forEach((y, i) => {
       const isLast = i === 2;
-      bead(195, y, 5, "ave", `Ave Maria ${i + 1} de 3`, {
+      bead(195, y, 5.4, "ave", `Ave Maria ${i + 1} de 3`, {
         step: isLast ? "5 · 3ª Ave Maria + Glória" : `${i + 3} · ${i + 1}ª Ave Maria`,
         title: isLast ? "Ave Maria + Glória" : "Ave Maria",
         text: isLast
@@ -811,19 +822,23 @@
     const medal = svg("g", { class: "rosary-bead bead-medal" });
     medal.style.transformOrigin = `195px ${medalCy}px`;
     medal.innerHTML = `
-      <circle class="medal-halo" cx="195" cy="${medalCy}" r="27" fill="none"/>
+      <circle class="medal-halo" cx="195" cy="${medalCy}" r="29" fill="none"/>
       <circle class="medal-ring" cx="195" cy="${medalCy}" r="25" fill="url(#metalGrad)"/>
-      <circle class="medal-bg" cx="195" cy="${medalCy}" r="21"/>
+      <circle cx="195" cy="${medalCy}" r="23" fill="none" stroke="#8a5a34" stroke-width=".9" stroke-dasharray="1.1 1.5"/>
+      <circle class="medal-bg" cx="195" cy="${medalCy}" r="20.5"/>
+      <circle cx="195" cy="${medalCy}" r="20.5" fill="none" stroke="rgba(255,241,216,.35)" stroke-width=".6"/>
       <path d="M195 ${medalCy - 14} v28 M181 ${medalCy} h28" class="medal-cross"/>
-      <text x="195" y="${medalCy - 7}" text-anchor="middle" class="medal-text">C S P B</text>
-      <text x="195" y="${medalCy + 12}" text-anchor="middle" class="medal-text">S. BENTO</text>`;
+      <text x="188" y="${medalCy - 4.5}" text-anchor="middle" class="medal-text">C</text>
+      <text x="202" y="${medalCy - 4.5}" text-anchor="middle" class="medal-text">S</text>
+      <text x="188" y="${medalCy + 10}" text-anchor="middle" class="medal-text">P</text>
+      <text x="202" y="${medalCy + 10}" text-anchor="middle" class="medal-text">B</text>`;
     makeInteractive(medal, "Medalha de São Bento — Salve Rainha", {
       step: "6 · Medalha de São Bento — Salve Rainha",
       title: "Salve Rainha",
       text: "Salve, Rainha, Mãe de misericórdia, vida, doçura e esperança nossa, salve! A vós bradamos, os degredados filhos de Eva; a vós suspiramos, gemendo e chorando neste vale de lágrimas. Eia, pois, advogada nossa, esses vossos olhos misericordiosos a nós volvei. E, depois deste desterro, mostrai-nos Jesus, bendito fruto do vosso ventre, ó clemente, ó piedosa, ó doce sempre Virgem Maria. Amém. E o sinal da cruz, para seguir pela coroa.\n\nAqui eu guardo a intenção: que São Bento guarde a nossa casa e o nosso caminho, e que a gente continue se escolhendo todos os dias. Por você, Eduarda."
     });
-    label(195, medalCy - 12, "left", ["SALVE RAINHA"]);
-    label(195, medalCy + 12, "right", ["SINAL DA CRUZ"]);
+    label(195, medalCy - 12, "left", ["SALVE RAINHA"], 27);
+    label(195, medalCy + 12, "right", ["SINAL DA CRUZ"], 27);
 
     // cinco dezenas ao redor da coroa
     let n = 6;
@@ -845,7 +860,7 @@
       for (let k = 1; k <= 10; k++) {
         const q = pointAtArc(arcCursor);
         n++;
-        bead(q.x, q.y, 4.6, "ave", `${d + 1}ª dezena — ${invocation.title} ${k} de 10`, {
+        bead(q.x, q.y, 5, "ave", `${d + 1}ª dezena — ${invocation.title} ${k} de 10`, {
           step: `${n} · ${d + 1}ª dezena — ${k}/10`,
           title: invocation.title,
           text: invocation.text
@@ -869,10 +884,17 @@
       if (textEl) textEl.textContent = text;
     };
 
+    // as 5 dezenas começam depois de: cruz, Pai Nosso, 3 Ave-Marias e medalha (6 contas); cada dezena = 11 contas
+    const pips = Array.from(document.querySelectorAll("#decadePips i"));
     const paint = () => {
       sequence.forEach((s, i) => {
         s.el.classList.toggle("prayed", i < current);
         s.el.classList.toggle("current", i === current);
+      });
+      const decade = current >= 6 ? Math.floor((current - 6) / 11) : -1;
+      pips.forEach((p, i) => {
+        p.classList.toggle("done", i < decade || (completed && current === total - 1));
+        p.classList.toggle("on", i === decade);
       });
     };
 
@@ -898,6 +920,8 @@
             "Em nome do Pai, do Filho e do Espírito Santo. Amém. E, no fim, um obrigado: por cada oração que eu fiz pensando em nós, Eduarda."
           );
           if (captionEl) captionEl.textContent = "Você concluiu este momento de oração. Toque em qualquer conta para revisitar uma intenção.";
+          rosary.classList.add("complete");
+          paint();
           burstFrom(rosary, 24);
         }, 1200);
       }
@@ -932,6 +956,7 @@
       clearTimeout(completeTimer);
       current = -1;
       completed = false;
+      rosary.classList.remove("complete");
       paint();
       setCard(
         "toque no crucifixo para começar",
