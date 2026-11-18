@@ -35,69 +35,62 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500..700;1,400..700&family=EB+Garamond:ital,wght@0,400..500;1,400..500&family=Manrope:wght@500..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="style.css?v=23">
 </head>
 <body>
 
-<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
-<div class="grain" aria-hidden="true"></div>
+<div class="backdrop" aria-hidden="true"></div>
 <div class="spotlight" id="spotlight" aria-hidden="true"></div>
-<div class="petals" id="petals" aria-hidden="true"></div>
-<div class="scroll-progress" aria-hidden="true"><div class="scroll-progress-fill" id="scrollFill"></div></div>
 <div class="heart-burst" id="heartBurst" aria-hidden="true"></div>
 
-<nav class="chapter-nav" id="chapterNav" aria-label="Capítulos">
-  <button class="chapter-dot" type="button" data-target="letterSection" data-label="Carta" aria-label="Carta"></button>
-  <button class="chapter-dot" type="button" data-target="historySection" data-label="Nossa história" aria-label="Nossa história"></button>
-  <button class="chapter-dot" type="button" data-target="photosSection" data-label="Fotos" aria-label="Nossas fotos"></button>
-  <button class="chapter-dot" type="button" data-target="rosarySection" data-label="Terço" aria-label="Terço"></button>
-  <button class="chapter-dot" type="button" data-target="reasonsSection" data-label="Por que eu te amo" aria-label="Por que eu te amo"></button>
-  <button class="chapter-dot" type="button" data-target="gameSection" data-label="Memória" aria-label="Jogo da memória"></button>
-  <button class="chapter-dot" type="button" data-target="ticTacSection" data-label="Jogo da velha" aria-label="Jogo da velha"></button>
-  <button class="chapter-dot" type="button" data-target="sushiSection" data-label="Sushi" aria-label="Mini-jogo do sushi"></button>
-  <button class="chapter-dot" type="button" data-target="musicSection" data-label="Música" aria-label="Nossa música"></button>
-  <button class="chapter-dot" type="button" data-target="foreverSection" data-label="Para sempre" aria-label="Para sempre"></button>
-</nav>
+<!-- barra fixa de capítulos (aparece depois da abertura) -->
+<header class="topbar" id="chapterNav">
+  <div class="topbar-row">
+    <span class="topbar-title"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heart"/></svg>Para Eduarda</span>
+    <span class="topbar-count" id="topbarCount" aria-hidden="true"></span>
+  </div>
+  <nav class="chips" id="chips" aria-label="Capítulos">
+    <button class="chapter-dot" type="button" data-target="letterSection">Carta</button>
+    <button class="chapter-dot" type="button" data-target="counterSection">Nosso tempo</button>
+    <button class="chapter-dot" type="button" data-target="openWhenSection">Abra quando</button>
+    <button class="chapter-dot" type="button" data-target="historySection">História</button>
+    <button class="chapter-dot" type="button" data-target="photosSection">Fotos</button>
+    <button class="chapter-dot" type="button" data-target="rosarySection">Terço</button>
+    <button class="chapter-dot" type="button" data-target="reasonsSection">Por que te amo</button>
+    <button class="chapter-dot" type="button" data-target="gamesSection">Jogos</button>
+    <button class="chapter-dot" type="button" data-target="musicSection">Música</button>
+    <button class="chapter-dot" type="button" data-target="foreverSection">Para sempre</button>
+  </nav>
+  <div class="scroll-progress" aria-hidden="true"><div class="scroll-progress-fill" id="scrollFill"></div></div>
+</header>
 
 <main>
-  <!-- ===== Abertura 3D ===== -->
+  <!-- ===== Abertura: nome, coração 3D e envelope numa tela só ===== -->
   <section class="hero" id="hero">
-    <div class="hero-stage" aria-hidden="true">
-      <img class="hero-poster" src="assets/coracao-poster.webp" width="640" height="640" alt="" fetchpriority="high" decoding="async">
-      <canvas id="heroCanvas"></canvas>
-    </div>
     <div class="hero-copy">
       <p class="eyebrow">uma pequena carta para</p>
       <h1 class="name">Eduarda</h1>
     </div>
-    <div class="hero-foot">
-      <p class="hero-tip"><span class="tip-dot" aria-hidden="true"></span>toque no coração · arraste para girar</p>
-      <a class="scroll-cue" href="#scene" aria-label="Descer para a carta"><span>role para baixo</span><i aria-hidden="true"></i></a>
+    <div class="hero-stage" id="heroStage" aria-hidden="true">
+      <img class="hero-poster" src="assets/coracao-poster.webp" width="640" height="640" alt="" fetchpriority="high" decoding="async">
+      <canvas id="heroCanvas"></canvas>
     </div>
-  </section>
+    <p class="hero-tip"><span class="tip-dot" aria-hidden="true"></span>toque no coração</p>
 
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track">
-      <span>eu te amo <b>✦</b> Eduarda <b>✦</b> para sempre <b>✦</b> você e eu <b>✦</b> eu te amo <b>✦</b> Eduarda <b>✦</b> para sempre <b>✦</b> você e eu <b>✦</b>&nbsp;</span>
-      <span>eu te amo <b>✦</b> Eduarda <b>✦</b> para sempre <b>✦</b> você e eu <b>✦</b> eu te amo <b>✦</b> Eduarda <b>✦</b> para sempre <b>✦</b> você e eu <b>✦</b>&nbsp;</span>
+    <div class="scene" id="scene">
+      <p class="sub">Tem uma coisa que eu preciso te dizer.</p>
+      <div class="envelope-wrap">
+        <a href="#letterSection" class="envelope-link" id="envelopeLink" aria-label="Abrir carta">
+          <div class="envelope" id="envelope">
+            <div class="envelope-body"></div>
+            <div class="letter-peek"></div>
+            <div class="envelope-flap"></div>
+            <div class="seal">E</div>
+          </div>
+        </a>
+      </div>
+      <p class="hint" id="hint">toque no selo para abrir</p>
     </div>
-  </div>
-
-  <!-- ===== Envelope ===== -->
-  <section class="scene" id="scene">
-    <p class="sub">Tem uma coisa que eu preciso te dizer.</p>
-    <div class="envelope-wrap">
-      <a href="#letterSection" class="envelope-link" id="envelopeLink" aria-label="Abrir carta">
-        <div class="envelope" id="envelope">
-          <div class="envelope-body"></div>
-          <div class="letter-peek"></div>
-          <div class="envelope-flap"></div>
-          <div class="seal">E</div>
-        </div>
-      </a>
-    </div>
-    <p class="hint" id="hint">toque no selo para abrir</p>
-    <a href="#letterSection" class="fallback-link">não abriu? toque aqui</a>
   </section>
 
   <!-- ===== Carta ===== -->
@@ -141,7 +134,6 @@
   <section class="page open-when-section" id="openWhenSection">
     <div class="open-when-wrap">
       <header class="sec-head">
-        <span class="sec-num" aria-hidden="true">01</span>
         <div class="page-eyebrow">para guardar por perto</div>
         <h2 class="page-title">Abra quando…</h2>
       </header>
@@ -169,8 +161,7 @@
   <section class="page" id="historySection">
     <div>
       <header class="sec-head">
-        <span class="sec-num" aria-hidden="true">02</span>
-        <div class="page-eyebrow">capítulo dois</div>
+        <div class="page-eyebrow">de onde tudo começou</div>
         <h2 class="page-title">Nossa história</h2>
       </header>
       <ol class="timeline">
@@ -196,7 +187,6 @@
   <section class="page photos-section" id="photosSection">
     <div class="photos-wrap">
       <header class="sec-head">
-        <span class="sec-num" aria-hidden="true">03</span>
         <div class="page-eyebrow">um pedacinho de nós</div>
         <h2 class="page-title">Nossas fotos</h2>
       </header>
@@ -230,7 +220,6 @@
   <section class="page rosary-section" id="rosarySection">
     <div>
       <header class="sec-head rosary-header">
-        <span class="sec-num" aria-hidden="true">04</span>
         <div class="page-eyebrow">no meio dessa história</div>
         <h2 class="page-title">Terço de São Bento</h2>
         <p class="rosary-intro">uma pausa de fé, carinho e proteção para o nosso amor</p>
@@ -296,8 +285,7 @@
   <section class="page" id="reasonsSection">
     <div>
       <header class="sec-head">
-        <span class="sec-num" aria-hidden="true">05</span>
-        <div class="page-eyebrow">capítulo três</div>
+        <div class="page-eyebrow">do fundo do coração</div>
         <h2 class="page-title">Por que eu te amo</h2>
       </header>
       <ul class="reasons">
@@ -310,48 +298,33 @@
     </div>
   </section>
 
-  <div class="marquee marquee-alt" aria-hidden="true">
-    <div class="marquee-track">
-      <span>hora de brincar <b>♥</b> jogo da memória <b>♥</b> jogo da velha <b>♥</b> sushi para nós <b>♥</b> hora de brincar <b>♥</b> jogo da memória <b>♥</b> jogo da velha <b>♥</b> sushi para nós <b>♥</b>&nbsp;</span>
-      <span>hora de brincar <b>♥</b> jogo da memória <b>♥</b> jogo da velha <b>♥</b> sushi para nós <b>♥</b> hora de brincar <b>♥</b> jogo da memória <b>♥</b> jogo da velha <b>♥</b> sushi para nós <b>♥</b>&nbsp;</span>
-    </div>
-  </div>
-
-  <section class="page game-section" id="gameSection">
+  <section class="page games-section" id="gamesSection">
     <div class="game-wrap">
       <header class="sec-head">
-        <span class="sec-num" aria-hidden="true">06</span>
         <div class="page-eyebrow">toque de diversão</div>
-        <h2 class="page-title">Jogo da memória</h2>
+        <h2 class="page-title">Hora de brincar</h2>
       </header>
-      <p class="caption caption-tight">Acha os pares antes que eu conte até dez! 💛</p>
+      <div class="game-tabs" role="tablist" aria-label="Escolha o jogo">
+        <button class="game-tab" role="tab" type="button" id="tab-mem" aria-controls="gameSection" aria-selected="true">🧠 Memória</button>
+        <button class="game-tab" role="tab" type="button" id="tab-ttt" aria-controls="ticTacSection" aria-selected="false">❤️ Velha</button>
+        <button class="game-tab" role="tab" type="button" id="tab-sushi" aria-controls="sushiSection" aria-selected="false">🍣 Sushi</button>
+      </div>
+      <div class="game-panel" role="tabpanel" id="gameSection" aria-labelledby="tab-mem">
+        <h3 class="game-title">Jogo da memória</h3>
+      <p class="caption">Acha os pares antes que eu conte até dez! 💛</p>
       <div class="memory-grid" id="memoryGrid"></div>
       <p class="game-status" id="gameStatus" aria-live="polite">tentativas: 0</p>
       <button class="btn" id="gameReset" type="button">jogar de novo</button>
-    </div>
-  </section>
-
-  <section class="page game-section" id="ticTacSection">
-    <div class="game-wrap">
-      <header class="sec-head">
-        <span class="sec-num" aria-hidden="true">07</span>
-        <div class="page-eyebrow">mais um bônus</div>
-        <h2 class="page-title">Jogo da velha do casal</h2>
-      </header>
-      <p class="caption caption-tight">❤️ contra ✦ — quem ganha essa vez?</p>
+      </div>
+      <div class="game-panel" role="tabpanel" id="ticTacSection" aria-labelledby="tab-ttt" hidden>
+        <h3 class="game-title">Jogo da velha do casal</h3>
+      <p class="caption">❤️ contra ✦ — quem ganha essa vez?</p>
       <div class="tictac-grid" id="tictacGrid"></div>
       <p class="game-status" id="tictacStatus" aria-live="polite">vez do ❤️</p>
       <button class="btn" id="tictacReset" type="button">jogar de novo</button>
-    </div>
-  </section>
-
-  <section class="page game-section sushi-section" id="sushiSection">
-    <div class="game-wrap sushi-wrap">
-      <header class="sec-head">
-        <span class="sec-num" aria-hidden="true">08</span>
-        <div class="page-eyebrow">mini desafio</div>
-        <h2 class="page-title">Sushi para nós</h2>
-      </header>
+      </div>
+      <div class="game-panel sushi-wrap" role="tabpanel" id="sushiSection" aria-labelledby="tab-sushi" hidden>
+        <h3 class="game-title">Sushi para nós</h3>
       <p class="caption">Monte o pedido clicando nos ingredientes certos. Cada combinação vale pontos.</p>
 
       <div class="sushi-dashboard">
@@ -382,14 +355,14 @@
         <button class="btn" id="sushiReset" type="button">novo pedido</button>
         <button class="btn btn-primary" id="sushiSubmit" type="button">servir sushi</button>
       </div>
+      </div>
     </div>
   </section>
 
   <section class="page" id="musicSection">
     <div class="music-card reveal">
       <header class="sec-head">
-        <span class="sec-num" aria-hidden="true">09</span>
-        <div class="page-eyebrow">capítulo quatro</div>
+        <div class="page-eyebrow">para ouvir junto</div>
         <h2 class="page-title">Uma música pra você</h2>
       </header>
 
@@ -453,6 +426,6 @@
   <symbol id="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.1C.6 8.6 2 5 5.4 4.2 8 3.6 10 5 12 7.5 14 5 16 3.6 18.6 4.2 22 5 23.4 8.6 22 11.9 19.5 16.4 12 21 12 21z"/></symbol>
 </svg>
 
-<script src="script.js?v=22" defer></script>
+<script src="script.js?v=23" defer></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 // Guarda a carta no celular para abrir mesmo sem internet.
-const VERSION = "v22";
+const VERSION = "v23";
 const CORE = [
-  "./", "index.html", "style.css?v=22", "script.js?v=22", "hero3d.js", "coracao.glb",
+  "./", "index.html", "style.css?v=23", "script.js?v=23", "hero3d.js", "coracao.glb",
   "assets/coracao-poster.webp", "assets/foto-1.webp", "assets/foto-2.webp", "assets/foto-3.webp",
   "assets/icon-192.png", "manifest.webmanifest"
 ];

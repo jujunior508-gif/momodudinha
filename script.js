@@ -91,7 +91,7 @@
       const max = document.documentElement.scrollHeight - window.innerHeight;
       if (scrollFill) scrollFill.style.transform = `scaleX(${max > 0 ? Math.min(1, y / max) : 0})`;
       // a navegação aparece assim que ela sai da abertura
-      if (hero) $("chapterNav")?.classList.toggle("show", y > hero.offsetHeight * 0.8);
+      if (hero) $("chapterNav")?.classList.toggle("show", y > hero.offsetHeight - 140);
     });
 
     if (reducedMotion) return;
@@ -199,7 +199,6 @@
         // também dispara se a página já abriu rolada para depois da carta
         if (entries.some((en) => en.isIntersecting || en.boundingClientRect.top < 0)) {
           showLetter();
-          $("chapterNav")?.classList.add("show");
           io.disconnect();
         }
       }, { threshold: 0.12 });
@@ -243,13 +242,43 @@
       });
       if (best === activeIndex || best < 0) return;
       activeIndex = best;
-      nav.dataset.current = dots[best].dataset.label || "";
       dots.forEach((dot, i) => {
         dot.classList.toggle("active", i === best);
         if (i === best) dot.setAttribute("aria-current", "true");
         else dot.removeAttribute("aria-current");
       });
+      // mantém a aba ativa visível na faixa de capítulos (sem mexer na rolagem da página)
+      const chips = $("chips"), dot = dots[best];
+      if (chips && dot) {
+        chips.scrollTo({ left: dot.offsetLeft - chips.clientWidth / 2 + dot.offsetWidth / 2, behavior: reducedMotion ? "auto" : "smooth" });
+      }
+      const count = $("topbarCount");
+      if (count) count.textContent = `${best + 1}/${dots.length}`;
     });
+  }
+
+  // ---------- jogos em abas ----------
+  function initGameTabs() {
+    const tabs = Array.from(document.querySelectorAll(".game-tab"));
+    if (!tabs.length) return;
+    const select = (tab, focus) => {
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute("aria-selected", String(on));
+        t.tabIndex = on ? 0 : -1;
+        const panel = $(t.getAttribute("aria-controls"));
+        if (panel) panel.hidden = !on;
+      });
+      if (focus) tab.focus();
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(tab));
+      tab.addEventListener("keydown", (e) => {
+        const dir = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (dir) { e.preventDefault(); select(tabs[(i + dir + tabs.length) % tabs.length], true); }
+      });
+    });
+    select(tabs[0]);
   }
 
   // ---------- jogo da memória ----------
@@ -875,8 +904,9 @@
     };
 
     // no celular o cartão da oração fica abaixo do terço: ao tocar numa conta, traz o texto para a tela
+    // o cartão da oração fica fixo na base da tela (CSS sticky); só rola se ele estiver fora de vista
     const revealCard = () => {
-      if (!cardEl || window.innerWidth > 650) return;
+      if (!cardEl || getComputedStyle(cardEl).position === "sticky") return;
       const r = cardEl.getBoundingClientRect();
       if (r.top > window.innerHeight * 0.85) {
         cardEl.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "end" });
@@ -913,6 +943,12 @@
       if (captionEl) captionEl.textContent = ROSARY_START_CAPTION;
     });
     if (countEl) countEl.textContent = `0 / ${total}`;
+
+    // enquanto o terço está na tela, o cartão da oração ocupa a base: o mini player sai da frente
+    if ("IntersectionObserver" in window) {
+      const section = $("rosarySection");
+      if (section) new IntersectionObserver(([en]) => document.body.classList.toggle("praying", en.isIntersecting)).observe(section);
+    }
 
     labelsToggle?.addEventListener("click", () => {
       const hidden = rosary.classList.toggle("labels-hidden");
@@ -977,6 +1013,7 @@
   initReveal();
   initEnvelope();
   initChapterNav();
+  initGameTabs();
   initMemory();
   initTicTac();
   initMusic();

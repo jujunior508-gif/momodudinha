@@ -7,6 +7,7 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 const hero = document.getElementById("hero");
 const canvas = document.getElementById("heroCanvas");
+const stage = document.getElementById("heroStage") || hero;
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const coarse = matchMedia("(pointer: coarse)").matches;
 const lowEnd = coarse && (navigator.hardwareConcurrency || 8) <= 4;
@@ -77,14 +78,14 @@ async function init() {
         o.material = new THREE.MeshStandardMaterial({ color: 0xf2b79c, roughness: 0.16, metalness: 1, envMapIntensity: 1.4 });
       }
     });
-    ring.scale.setScalar(0.62);
+    ring.scale.setScalar(0.48);
     orbit.add(ring);
   }
 
   // halo suave atrás do coração (um "bloom" barato)
   const glowTex = radialTexture([[0, "rgba(255,120,150,0.55)"], [0.35, "rgba(214,40,90,0.22)"], [1, "rgba(0,0,0,0)"]]);
   const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true }));
-  glow.scale.setScalar(5.2);
+  glow.scale.setScalar(3.4);
   glow.position.z = -1.2;
   world.add(glow);
 
@@ -113,21 +114,22 @@ async function init() {
   // ---------- layout responsivo ----------
   let orbitR = 1.45;
   const resize = () => {
-    const w = hero.clientWidth, h = hero.clientHeight;
+    const w = stage.clientWidth, h = stage.clientHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     // garante que o coração caiba na largura do celular e ocupe ~42% da altura
     const fovT = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-    const needH = Math.max(2 / 0.44, (2.1 / 0.62) / camera.aspect);
+    // o coração ocupa ~70% da caixa (altura) e no máximo ~62% da largura
+    const needH = Math.max(2 / 0.84, (2.1 / 0.72) / camera.aspect);
     camera.position.set(0, 0, needH / (2 * fovT));
     camera.updateProjectionMatrix();
     const visH = needH, visW = needH * camera.aspect;
-    baseY = -visH * (camera.aspect < 0.8 ? 0.07 : 0.05);
-    orbitR = Math.min(1.5, visW * 0.3);
+    baseY = -visH * 0.02;
+    orbitR = Math.min(1.3, visW * 0.4);
   };
   let baseY = 0;
   resize();
-  new ResizeObserver(resize).observe(hero);
+  new ResizeObserver(resize).observe(stage);
 
   // ---------- interação ----------
   const target = { x: 0, y: 0 };
@@ -208,7 +210,7 @@ async function init() {
 
     // órbita do anel: passa na frente e atrás do coração
     const a = t * (reducedMotion ? 0 : 0.55) + 0.9;
-    orbit.position.set(Math.cos(a) * orbitR, Math.sin(a) * 0.42 + 0.15, Math.sin(a) * orbitR * 0.75);
+    orbit.position.set(Math.cos(a) * orbitR, Math.sin(a) * 0.42 + 0.15, Math.sin(a) * orbitR * 0.5);
     orbit.rotation.set(t * 0.7, t * 0.9, 0.4);
     orbit.scale.setScalar(e);
 
@@ -216,9 +218,7 @@ async function init() {
     glow.material.opacity = 0.75 + beat(t) * 0.25;
 
     // rolagem: o coração sobe, diminui e some
-    world.position.y = baseY + scrollP * 1.6 + (1 - e) * -0.6;
-    world.scale.setScalar(1 - scrollP * 0.35);
-    canvas.style.opacity = String(1 - Math.min(1, scrollP * 1.4));
+    world.position.y = baseY + (1 - e) * -0.6;
 
     renderer.render(scene, camera);
   };
