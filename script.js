@@ -85,12 +85,13 @@
 
   function initAmbient() {
     const scrollFill = $("scrollFill");
-    const glowEl = $("glow");
+    const hero = $("hero");
     scrollTasks.push(() => {
       const y = window.scrollY;
       const max = document.documentElement.scrollHeight - window.innerHeight;
       if (scrollFill) scrollFill.style.transform = `scaleX(${max > 0 ? Math.min(1, y / max) : 0})`;
-      if (glowEl && !reducedMotion) glowEl.style.transform = `translate3d(0, ${(-y * 0.04).toFixed(1)}px, 0)`;
+      // a navegação aparece assim que ela sai da abertura
+      if (hero) $("chapterNav")?.classList.toggle("show", y > hero.offsetHeight * 0.8);
     });
 
     if (reducedMotion) return;
@@ -98,7 +99,7 @@
     // pétalas (menos no celular, para poupar bateria)
     const petals = $("petals");
     if (petals) {
-      const count = window.innerWidth < 600 ? 9 : 14;
+      const count = window.innerWidth < 600 ? 6 : 11;
       const frag = document.createDocumentFragment();
       for (let i = 0; i < count; i++) {
         const p = document.createElement("div");
@@ -242,6 +243,7 @@
       });
       if (best === activeIndex || best < 0) return;
       activeIndex = best;
+      nav.dataset.current = dots[best].dataset.label || "";
       dots.forEach((dot, i) => {
         dot.classList.toggle("active", i === best);
         if (i === best) dot.setAttribute("aria-current", "true");
@@ -396,6 +398,7 @@
       btn.setAttribute("aria-label", on ? "Pausar música" : "Tocar música");
       vinyl?.classList.toggle("spinning", on);
       tonearm?.classList.toggle("playing", on);
+      $("eq")?.classList.toggle("playing", on);
     };
 
     btn.addEventListener("click", () => {
@@ -892,33 +895,22 @@
     }, 60000 - (Date.now() % 60000));
   }
 
-  // ---------- coração 3D (carregado depois que a página fica pronta) ----------
+  // ---------- coração 3D (three.js, carregado depois que a página fica pronta) ----------
   function initHeart3d() {
-    const heart = $("romanticHeart");
-    const wrap = $("heroHeart3d");
-    if (!heart) return;
+    const canvas = $("heroCanvas");
+    if (!canvas) return;
+    // toque no coração 3D: chuva de coraçõezinhos
+    window.addEventListener("heart:tap", (e) => burstHearts(e.detail.x, e.detail.y, 20));
+
     const conn = navigator.connection;
-    if (conn && (conn.saveData || /2g/.test(conn.effectiveType || ""))) {
-      wrap?.remove();
-      return;
-    }
-    const load = async () => {
-      try {
-        await import("https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js");
-        heart.addEventListener("error", () => wrap?.remove(), { once: true });
-        heart.src = heart.dataset.src;
-        if (!reducedMotion) {
-          heart.setAttribute("autoplay", "");
-          heart.setAttribute("auto-rotate", "");
-          heart.setAttribute("rotation-per-second", "12deg");
-        }
-      } catch {
-        wrap?.remove();
-      }
-    };
+    const slow = conn && (conn.saveData || /2g/.test(conn.effectiveType || ""));
+    const canImportMap = HTMLScriptElement.supports?.("importmap");
+    if (slow || !canImportMap) return; // fica o pôster estático
+
+    const load = () => import("./hero3d.js").catch((err) => console.warn("3D indisponível:", err));
     const schedule = () => ("requestIdleCallback" in window
-      ? requestIdleCallback(load, { timeout: 2500 })
-      : setTimeout(load, 600));
+      ? requestIdleCallback(load, { timeout: 1200 })
+      : setTimeout(load, 300));
     if (document.readyState === "complete") schedule();
     else window.addEventListener("load", schedule, { once: true });
   }

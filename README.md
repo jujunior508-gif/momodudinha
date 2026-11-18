@@ -1,22 +1,25 @@
-# Site para GitHub Pages
+# Para Eduarda 💌
 
-Este é um site estático, sem etapa de compilação ou dependências externas. O arquivo `index.html` está na raiz do projeto para que o repositório possa ser publicado diretamente pelo GitHub Pages.
-
-## Publicar pelo GitHub Pages
-
-1. Crie um repositório no GitHub.
-2. Envie todos os arquivos deste diretório para a raiz do repositório.
-3. No GitHub, abra **Settings → Pages**.
-4. Em **Build and deployment**, selecione **Deploy from a branch**.
-5. Escolha a branch principal, normalmente `main`, e a pasta `/ (root)`.
-6. Salve e aguarde a publicação do endereço exibido pelo GitHub.
-
-O arquivo `.nojekyll` informa ao GitHub Pages que o projeto não precisa ser processado pelo Jekyll. Os caminhos dos arquivos são relativos, portanto o site funciona tanto em um repositório de projeto quanto em um domínio personalizado.
+Site estático publicado pelo GitHub Pages (sem etapa de build).
 
 ## Estrutura
 
-- `index.html`: página principal.
-- `style.css`: estilos originais.
-- `script.js`: interações originais.
-- `images/`: fotografias utilizadas pelo site.
-- `.nojekyll`: configuração para publicação estática direta.
+- `index.html` — página principal.
+- `style.css` — visual ("noite de veludo": rubi, champanhe, vidro fosco), mobile-first.
+- `script.js` — envelope, terço de São Bento, jogos, música e contador.
+- `hero3d.js` — cena 3D da abertura (three.js via CDN, carregada só depois da página pronta).
+- `coracao.glb` — coração + anel modelados no Blender (compressão Meshopt, ~90 KB).
+- `assets/` — pôster do coração e fotos em WebP; `build_heart.blender.py` recria tudo:
+  `blender -b --python assets/build_heart.blender.py`
+- `foto-*.jpg` — fotos originais (fallback para navegadores sem WebP).
+- `musica.mp3` — "Salvatore", carregada só ao tocar.
+
+## Desempenho
+
+- O 3D só renderiza enquanto a abertura está visível e não carrega em modo de economia de dados.
+- Enquanto o 3D carrega, aparece um pôster estático do coração (8 KB).
+- Animações respeitam "reduzir movimento" do sistema.
+
+## Publicar
+
+Settings → Pages → Deploy from a branch → `main` / `(root)`.
